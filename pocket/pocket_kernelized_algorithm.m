@@ -37,7 +37,8 @@ y = 2*y - 1;  % transform 0 in -1
 X_test = [ones(size(X_test, 1), 1) X_test]; % add column of ones
 y_test = 2*y_test - 1;  % transform 0 in -1 
 
-w = zeros(size(X,2), 1); %initialize weights as a column of 0 of d+1 dimension
+
+alpha = zeros(size(X,1), 1); % number of times each data point was missclasified
 
 % initialize stuff
 max_step = 1000 * size(X,1); % maximum number of iterations
@@ -46,7 +47,8 @@ step = 1;
 run = 0;
 best_run = 0;
 max_run = 100 * size(X, 1);
-w_pocket = w;
+alpha_pocket = alpha;
+
 
 % updates will stop if the number of steps exceeds some maximum number
 % or if the run is long enough
@@ -56,10 +58,19 @@ while step <= max_step && run < max_run
     if i > size(X,1)  % begin again
         i = 1;
     end
-    % predict class label for this data point
-    y_hat = sign(X(i, :) * w);
     
-    if y_hat == 0   % choose 0 as missclassified
+    XW = 0;
+    for j=1:size(X,1)
+        XW = XW + alpha(j) * y(j) * X(j,:) * X(i,:)';
+    end
+    
+    
+    %XW = X(i, :) * w;
+    
+    % predict class label for this data point
+    y_hat = sign(XW);
+    
+     if y_hat == 0   % choose 0 as missclassified
         y_hat = -1 * y(i);
     end
     
@@ -68,17 +79,22 @@ while step <= max_step && run < max_run
     else
         if run > best_run
             best_run = run;
-            w_pocket = w;
+            alpha_pocket = alpha;
             run = 0;
         end
-        w = w + eta * 0.5 * (y(i) - y_hat) * X(i, :)';
+        alpha(i) = alpha(i) + 1;
     end
-  
     i = i + 1;
     step = step + 1;
 end
 if run > best_run
-    w_pocket = w;
+    alpha_pocket = alpha;
+end
+
+% Calculate weights from alpha
+w_pocket = zeros(size(X,2), 1);
+for i=1:size(X,1)
+    w_pocket = w_pocket + alpha_pocket(i) * y(i) * X(i,:)';
 end
 
 % Test the weights with our test set
