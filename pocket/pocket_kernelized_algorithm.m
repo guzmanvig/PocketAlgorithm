@@ -1,12 +1,12 @@
-% data = xlsread('debt.xls');
-% % Test set as the first half of data
-% test_set = data(1:floor(size(data, 1)/2), :);
-% X_test = test_set(:,2:size(test_set, 2)-1); % removes first column (id) and last (class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of data
-% training_set = data((floor(size(data, 1)/2) + 1):end, :);
-% X = training_set(:,2:size(training_set, 2)-1); % removes first column (id) and last (class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
+data = xlsread('debt.xls');
+% Test set as the first half of data
+test_set = data(1:floor(size(data, 1)/2), :);
+X_test = test_set(:,2:size(test_set, 2)-1); % removes first column (id) and last (class label)
+y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
+% Training set as the second half of data
+training_set = data((floor(size(data, 1)/2) + 1):end, :);
+X = training_set(:,2:size(training_set, 2)-1); % removes first column (id) and last (class label)
+y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
 
 % data = table2array(readtable('iris_modified.txt'));
 % suffled_data = data(randperm(size(data, 1)), :); % shuffled data
@@ -19,17 +19,17 @@
 % X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
 % y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
 
-data = table2array(readtable('breast_cancer_no_nan.txt'));
-% Test set as the first half of data
-test_set = data(1:floor(size(data, 1)/2), :);
-X_test = test_set(:,2:size(test_set, 2)-1); % removes first column (id) and last (class label)
-y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-y_test = (y_test - 2) / 2; % transform 2 in 0 and 4 in 1
-% Training set as the second half of data
-training_set = data((floor(size(data, 1)/2) + 1):end, :);
-X = training_set(:,2:size(training_set, 2)-1); % removes first column (id) and last (class label)
-y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-y = (y - 2) / 2; % transform 2 in 0 and 4 in 1
+% data = table2array(readtable('breast_cancer_no_nan.txt'));
+% % Test set as the first half of data
+% test_set = data(1:floor(size(data, 1)/2), :);
+% X_test = test_set(:,2:size(test_set, 2)-1); % removes first column (id) and last (class label)
+% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
+% y_test = (y_test - 2) / 2; % transform 2 in 0 and 4 in 1
+% % Training set as the second half of data
+% training_set = data((floor(size(data, 1)/2) + 1):end, :);
+% X = training_set(:,2:size(training_set, 2)-1); % removes first column (id) and last (class label)
+% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
+% y = (y - 2) / 2; % transform 2 in 0 and 4 in 1
 
 
 X = [ones(size(X, 1), 1) X]; % add column of ones
@@ -37,16 +37,17 @@ y = 2*y - 1;  % transform 0 in -1
 X_test = [ones(size(X_test, 1), 1) X_test]; % add column of ones
 y_test = 2*y_test - 1;  % transform 0 in -1 
 
+kernel = "COSINE";
 
 alpha = zeros(size(X,1), 1); % number of times each data point was missclasified
 
 % initialize stuff
-max_step = 1000 * size(X,1); % maximum number of iterations
+max_step = 10 * size(X,1); % maximum number of iterations
 eta = 1;         % the coefficient for the update rule (0 < eta <= 1)
 step = 1;
 run = 0;
 best_run = 0;
-max_run = 100 * size(X, 1);
+max_run = 2 * size(X, 1);
 alpha_pocket = alpha;
 
 
@@ -61,12 +62,9 @@ while step <= max_step && run < max_run
     
     XW = 0;
     for j=1:size(X,1)
-        XW = XW + alpha(j) * y(j) * X(j,:) * X(i,:)';
+        XW = XW + alpha(j) * y(j) * apply_kernel(X(j,:),X(i,:), kernel);
     end
-    
-    
-    %XW = X(i, :) * w;
-    
+        
     % predict class label for this data point
     y_hat = sign(XW);
     
@@ -91,18 +89,68 @@ if run > best_run
     alpha_pocket = alpha;
 end
 
-% Calculate weights from alpha
-w_pocket = zeros(size(X,2), 1);
-for i=1:size(X,1)
-    w_pocket = w_pocket + alpha_pocket(i) * y(i) * X(i,:)';
-end
 
 % Test the weights with our test set
 correct_classified = 0;
 for i=1:size(X_test,1)
-    if sign(X_test(i,:) * w_pocket) == sign(y_test(i))
+    XW = 0;
+    for j=1:size(X,1)
+        XW = XW + alpha_pocket(j) * y(j) * apply_kernel(X(j,:),X_test(i,:),kernel);
+    end
+    
+    if sign(XW) == sign(y_test(i))
         correct_classified = correct_classified + 1;
     end
 end
 classification_accurracy = (correct_classified / size(X_test,1)) * 100;
 disp(classification_accurracy);
+
+
+% Kernel functions
+function k = apply_kernel(u, v, type)
+    switch type
+        case 'POLYNOMIAL2'
+            k = compute_polynomial_2_kernel(u, v);
+        case 'COSINE'
+            k = compute_cosine_kernel(u,v);
+        case 'YANG'
+            k = compute_yang_kernel(u,v);
+        case 'INNER'
+            k = compute_inner_product_kernel(u, v);
+        otherwise
+            fprintf('Error, no such kernel is found!\n')
+    end
+end
+
+function k = compute_inner_product_kernel(u,v)
+    k = u * v';
+end
+
+function k = compute_polynomial_2_kernel(u,v)
+    k = (u * v'  + 1)^2;
+end
+
+function k = compute_cosine_kernel(u,v)
+    k = (u * v') / (norm(u) * norm(v));
+end
+
+function k = compute_yang_kernel(u,v)
+    
+    first_sum = 0;
+    second_sum = 0;
+    for j=1:size(u,2)
+        if u(j) >= v(j)
+            first_sum = first_sum + (u(j) - v(j));
+        else
+            second_sum = second_sum + (v(j) - u(j));
+        end
+    end
+    
+    sum_maxs = 0;
+    for j=1:size(u,2)
+        sum_maxs = sum_maxs + max([abs(u(j)), abs(v(j)), abs(u(j) - v(j))]);
+    end
+    
+    k = 1 - sqrt(first_sum^2 + second_sum^2)/sum_maxs;
+
+end
