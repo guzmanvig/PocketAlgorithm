@@ -1,0 +1,17 @@
+identificators = 1 2 3 4
+remove first line and date
+
+0:
+falling,
+lying down,
+lying,
+sitting down
+sitting on the ground,
+sitting,
+
+1:
+walking,
+standing up from lying,
+on all fours,
+standing up from sitting
+standing up from sitting on the ground
