@@ -1,110 +1,44 @@
-% data = xlsread('debt.xls');
-% % Test set as the first half of data
-% test_set = data(1:floor(size(data, 1)/2), :);
-% X_test = test_set(:,2:size(test_set, 2)-1); % removes first column (id) and last (class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of data
-% training_set = data((floor(size(data, 1)/2) + 1):end, :);
-% X = training_set(:,2:size(training_set, 2)-1); % removes first column (id) and last (class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-
-% data = xlsread('iris_shuffled.xlsx');
-% % Test set as the first half of the shuffled data
-% test_set = data(1:size(data, 1)/2, :);
-% X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of the shuffled data
-% training_set = data((size(data, 1)/2 + 1):end, :);
-% X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-
-% data = table2array(readtable('breast_cancer_no_nan.txt'));
-% % Test set as the first half of data
-% test_set = data(1:floor(size(data, 1)/2), :);
-% X_test = test_set(:,2:size(test_set, 2)-1); % removes first column (id) and last (class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% y_test = (y_test - 2) / 2; % transform 2 in 0 and 4 in 1
-% % Training set as the second half of data
-% training_set = data((floor(size(data, 1)/2) + 1):end, :);
-% X = training_set(:,2:size(training_set, 2)-1); % removes first column (id) and last (class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-% y = (y - 2) / 2; % transform 2 in 0 and 4 in 1
-
-% training_set = table2array(readtable('shuttle_training.txt'));
-% test_set = table2array(readtable('shuttle_test.txt'));
-% X_test = test_set(1:5000,1:size(test_set, 2)-1); % removes last column (class label)
-% y_test = xlsread('shuttle_y_test.xlsx');
-% X = training_set(1:5000,1:size(training_set, 2)-1); % removes first column (id) and last (class label)
-% y = xlsread('shuttle_y_training.xlsx');
-
-% data = xlsread('wholesale_data.csv');
-% % Test set as the first half of data
-% test_set = data(1:floor(size(data, 1)/2), :);
-% X_test = test_set(:,2:size(test_set, 2)); % removes first column(class label)
-% y_test = test_set(:,1); %first column is the class label
-% y_test = (y_test - 1); % transform 2 in 1 and 1 in 0
-% % Training set as the second half of data
-% training_set = data((floor(size(data, 1)/2) + 1):end, :);
-% X = training_set(:,2:size(test_set, 2)); % removes first column(class label)
-% y = training_set(:,1); %first column is the class label
-% y = (y - 1); % transform 2 in 1 and 1 in 0
-
-% data = xlsread('HTRU.csv');
-% % Test set as the first half of the shuffled data
-% test_set = data(1:size(data, 1)/2, :);
-% X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of the shuffled data
-% training_set = data((size(data, 1)/2 + 1):end, :);
-% X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-
-data = table2array(readtable('Skin_cut.txt'));
-% Test set as the first half of the shuffled data
-%test_set = data(1:size(data, 1)/2, :);
-test_set = data(1:5000, :);
-X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
-y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-y_test = (y_test - 1); % transform 2 in 1 and 1 in 0
-% Training set as the second half of the shuffled data
-%training_set = data((size(data, 1)/2 + 1):end, :);
-training_set = data(5001:10000, :);
-X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
-y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-y = (y - 1); % transform 2 in 1 and 1 in 0
-
-% data = xlsread('position_modified_cut.xlsx');
-% % Test set as the first half of the shuffled data
-% %test_set = data(1:size(data, 1)/2, :);
-% test_set = data(1:5000, :);
-% X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of the shuffled data
-% %training_set = data((size(data, 1)/2 + 1):end, :);
-% training_set = data(5001:10000, :);
-% X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-
-% data = xlsread('abalone_01_shuffled.xlsx');
-% %suffled_data = data(randperm(size(data, 1)), :);
-% % Test set as the first half of the shuffled data
-% test_set = data(1:size(data, 1)/2, :);
-% X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of the shuffled data
-% training_set = data((size(data, 1)/2 + 1):end, :);
-% X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-
-% % Test set as the first half of the shuffled data
-% test_set = xlsread('contraceptive_test.xlsx');
-% training_set = xlsread('contraceptive_train.xlsx');
-% X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
-% y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
-% % Training set as the second half of the shuffled data
-% X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
-% y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
-
+prompt = 'SELECT THE DATA SET: ABALONE - SKIN - SHUTTLE: ';
+set_name = input(prompt,'s');
+switch set_name
+        case 'ABALONE'
+            data = xlsread('data/abalone.xlsx');
+            test_set = data(1:size(data, 1)/2, :); % test set is the first half of the data
+            X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
+            y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
+            training_set = data((size(data, 1)/2 + 1):end, :); % training set is the second half of the data
+            X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
+            y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
+            
+            max_step = 10*size(X, 1); 
+            
+        case 'SKIN'
+            data = table2array(readtable('data/skin.txt'));
+            test_set = data(1:5000, :); % take the first 5000 as test set
+            X_test = test_set(:,1:size(test_set, 2)-1); % removes last column(class label)
+            y_test = test_set(:,size(test_set, 2):size(test_set, 2)); %last column is the class label
+            y_test = (y_test - 1); % transform 2 in 1 and 1 in 0
+            training_set = data(5001:10000, :); % take the second 5000 as training set
+            X = training_set(:,1:size(training_set, 2)-1); % removes last column(class label)
+            y = training_set(:,size(training_set, 2):size(training_set, 2)); %last column is the class label
+            y = (y - 1); % transform 2 in 1 and 1 in 0
+            
+            max_step = 3*size(X, 1); 
+        
+        case 'SHUTTLE'
+            training_set = table2array(readtable('data/shuttle_training.txt'));
+            test_set = table2array(readtable('data/shuttle_test.txt'));
+            X_test = test_set(1:5000,1:size(test_set, 2)-1); % take the first 5000 and removes last column (class label)
+            y_test = xlsread('data/shuttle_y_test.xlsx');
+            X = training_set(1:5000,1:size(training_set, 2)-1); % take the first 5000 and removes last column (class label)
+            y = xlsread('data/shuttle_y_training.xlsx');
+            
+            max_step = 5*size(X, 1); 
+        
+    otherwise
+            fprintf('Error, no such data set!\n');
+            return;
+end
 
 X = [ones(size(X, 1), 1) X]; % add column of ones
 y = 2*y - 1;  % transform 0 in -1 
@@ -113,9 +47,7 @@ y_test = 2*y_test - 1;  % transform 0 in -1
 
 w = zeros(size(X,2), 1); %initialize weights as a column of 0 of d+1 dimension
 
-% initialize stuff
-max_step = 5*size(X, 1); % maximum number of iterations
-eta = 1;         % the coefficient for the update rule (0 < eta <= 1)
+eta = 1;         
 step = 1;
 run = 0;
 best_run = 0;
